@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':common-module')
+//    implementation project(':common-module')
     implementation 'org.springframework.boot:spring-boot-starter'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
