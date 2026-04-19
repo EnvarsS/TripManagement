@@ -19,9 +19,8 @@ repositories {
 }
 
 dependencies {
-//    implementation project(':common-module')
+    implementation project(':common-module')
 
-    // Основні starters з виключенням logging
     implementation('org.springframework.boot:spring-boot-starter') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
@@ -32,7 +31,6 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 
-    // Log4j2 — головна залежність для логування
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
     implementation 'org.springframework.kafka:spring-kafka'
@@ -50,7 +48,6 @@ dependencies {
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // Тести з виключенням
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
