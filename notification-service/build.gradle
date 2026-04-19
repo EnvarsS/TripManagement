@@ -19,8 +19,9 @@ repositories {
 }
 
 dependencies {
-    implementation project(':common-module')
+//    implementation project(':common-module')
 
+    // Основні starters з виключенням logging
     implementation('org.springframework.boot:spring-boot-starter') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
@@ -31,18 +32,25 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
 
+    // Log4j2 — головна залежність для логування
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 
     implementation 'org.springframework.kafka:spring-kafka'
-
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    developmentOnly('org.springframework.boot:spring-boot-devtools') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    developmentOnly('org.springframework.boot:spring-boot-docker-compose') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Тести з виключенням
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
@@ -57,9 +65,5 @@ generateJava {
 
 tasks.named('test') {
     useJUnitPlatform()
-}
-tasks.named('test') {
-    useJUnitPlatform()
     enabled = true
-    ignoreFailures = false
 }
