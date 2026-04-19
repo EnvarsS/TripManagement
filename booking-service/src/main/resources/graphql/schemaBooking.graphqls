@@ -1,0 +1,38 @@
+"""
+Available booking statuses.
+"""
+enum BookingStatus {
+    CREATED
+    CONFIRMED
+    CANCELED
+}
+
+"""
+Response model for booking data.
+"""
+type BookingResponse {
+    id: ID
+    tripId: ID
+    userId: ID
+    status: BookingStatus
+    createdAt: String
+}
+
+"""
+Input model for booking creation.
+"""
+input BookingRequest {
+    tripId: ID!
+    userId: ID!
+}
+
+type Query {
+    getAllBookings: [BookingResponse!]!
+    getBookingById(id: ID!): BookingResponse
+}
+
+type Mutation {
+    createBooking(request: BookingRequest!): BookingResponse!
+    confirmBooking(id: ID!): BookingResponse!
+    cancelBooking(id: ID!): BookingResponse!
+}

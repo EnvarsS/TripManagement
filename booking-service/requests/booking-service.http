@@ -1,0 +1,39 @@
+### Get all bookings
+POST http://localhost:8089/graphql
+Content-Type: application/json
+
+{
+  "query": "query { getAllBookings { id tripId userId status createdAt } }"
+}
+
+### Create booking
+POST http://localhost:8089/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createBooking(request: { tripId: 1, userId: 100 }) { id tripId userId status createdAt } }"
+}
+
+### Get booking by id
+POST http://localhost:8089/graphql
+Content-Type: application/json
+
+{
+  "query": "query { getBookingById(id: 1) { id tripId userId status createdAt } }"
+}
+
+### Confirm booking
+POST http://localhost:8089/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { confirmBooking(id: 1) { id tripId userId status createdAt } }"
+}
+
+### Cancel booking
+POST http://localhost:8089/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { cancelBooking(id: 1) { id tripId userId status createdAt } }"
+}
