@@ -19,6 +19,7 @@ public class BookingConfirmedEvent {
     private UUID tripId;
     private String bookingType;
     private String details;
+    private String status;
     private LocalDateTime confirmedAt;
     private String confirmationNumber;
 }
