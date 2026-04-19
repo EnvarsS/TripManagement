@@ -7,7 +7,6 @@ plugins {
 
 group = 'org.envycorp'
 version = '0.0.1-SNAPSHOT'
-description = 'notification-service'
 
 java {
     toolchain {
@@ -20,20 +19,33 @@ repositories {
 }
 
 dependencies {
-//    implementation project(':common-module')
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation project(':common-module')
+
+    implementation('org.springframework.boot:spring-boot-starter') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-validation') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
@@ -45,4 +57,9 @@ generateJava {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+tasks.named('test') {
+    useJUnitPlatform()
+    enabled = true
+    ignoreFailures = false
 }
