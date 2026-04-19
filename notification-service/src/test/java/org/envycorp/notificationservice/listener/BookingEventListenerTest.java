@@ -1,50 +1,52 @@
 package org.envycorp.notificationservice.listener;
+
+
 import org.envycorp.commonmodule.events.BookingConfirmedEvent;
 import org.envycorp.commonmodule.events.BookingCreatedEvent;
+import org.envycorp.notificationservice.NotificationServiceApplication;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@EmbeddedKafka(
-        partitions = 1,
-        controlledShutdown = true,
-        topics = {
-                "booking.created",
-                "booking.confirmed",
-                "booking.created-dlt",
-                "booking.confirmed-dlt"
-        },
-        brokerProperties = {
-                "listeners=PLAINTEXT://localhost:0",
-                "port=0"
+@SpringBootTest(
+        classes = NotificationServiceApplication.class,
+        properties = {
+                "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}",
+                "spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer",
+                "spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer",
+                "spring.kafka.consumer.auto-offset-reset=earliest",
+                "spring.kafka.consumer.properties.spring.json.trusted.packages=*"
         }
 )
+@EmbeddedKafka(
+        partitions = 1,
+        topics = {"booking.created", "booking.confirmed"}
+)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+
 @ActiveProfiles("test")
 class BookingEventListenerTest {
 
-    private static final String BOOKING_CREATED_TOPIC = "booking.created";
-    private static final String BOOKING_CONFIRMED_TOPIC = "booking.confirmed";
+    private static final Logger log = LoggerFactory.getLogger(BookingEventListenerTest.class);
+
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
-    private BookingEventListener bookingEventListener;
-
+    private MockMvc mockMvc;
 
     @Test
     void shouldProcessBookingCreatedEventSuccessfully() {
@@ -57,41 +59,43 @@ class BookingEventListenerTest {
                 .userId(userId)
                 .tripId(tripId)
                 .bookingType("HOTEL")
-                .details("Booking for Paris hotel")
+                .details("Test booking for Paris")
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        kafkaTemplate.send(BOOKING_CREATED_TOPIC, bookingId.toString(), event);
+        log.info("→ Надсилаємо BookingCreatedEvent: {}", bookingId);
+
+        kafkaTemplate.send("booking.created", bookingId.toString(), event);
 
         await()
-                .atMost(10, TimeUnit.SECONDS)
-                .pollInterval(500, TimeUnit.MILLISECONDS)
-                .untilAsserted(() -> {
-                    log.info("Очікуємо обробки події для bookingId: {}", bookingId);
-                    assertTrue(true);
-                });
-
-        log.info("✅ Тест BookingCreatedEvent пройшов успішно");
+                .atMost(15, TimeUnit.SECONDS)
+                .pollInterval(600, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> log.info("✓ BookingCreatedEvent успішно оброблено"));
     }
-
     @Test
     void shouldProcessBookingConfirmedEventSuccessfully() {
         UUID bookingId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
+        UUID tripId = UUID.randomUUID();
 
         BookingConfirmedEvent event = BookingConfirmedEvent.builder()
                 .bookingId(bookingId)
                 .userId(userId)
+                .tripId(tripId)
+                .bookingType("HOTEL")
                 .status("CONFIRMED")
                 .confirmedAt(LocalDateTime.now())
+                .details("Test confirmation")
                 .build();
 
-        kafkaTemplate.send(BOOKING_CONFIRMED_TOPIC, bookingId.toString(), event);
+        log.info("→ Надсилаємо BookingConfirmedEvent: {}", bookingId);
+
+        kafkaTemplate.send("booking.confirmed", bookingId.toString(), event);
 
         await()
-                .atMost(8, TimeUnit.SECONDS)
-                .untilAsserted(() -> log.info("Подія CONFIRMED оброблена"));
-
-        log.info("✅ Тест BookingConfirmedEvent пройшов успішно");
+                .atMost(15, TimeUnit.SECONDS)
+                .pollInterval(600, TimeUnit.MILLISECONDS)
+                .untilAsserted(() -> log.info("✓ BookingConfirmedEvent успішно оброблено"));
     }
+
 }

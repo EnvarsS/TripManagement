@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.5'
+    id 'org.springframework.boot' version '4.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'com.netflix.dgs.codegen' version '8.3.0'
 }
@@ -17,41 +17,31 @@ java {
 repositories {
     mavenCentral()
 }
+configurations {
+    all {
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
 
 dependencies {
     implementation project(':common-module')
 
-    implementation('org.springframework.boot:spring-boot-starter') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
-    implementation('org.springframework.boot:spring-boot-starter-web') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
-    implementation('org.springframework.boot:spring-boot-starter-validation') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
 
-    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    developmentOnly('org.springframework.boot:spring-boot-devtools') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
-    developmentOnly('org.springframework.boot:spring-boot-docker-compose') {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
-
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+    implementation 'org.springframework.retry:spring-retry:2.0.12'
+    implementation 'org.springframework:spring-aspects'
 }
 
 generateJava {
