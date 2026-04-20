@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: -common-module
-          - notification-service
+        service: [common-module], [notification-service]
 
     steps:
       - name: Checkout code
