@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS user_db;
+GRANT ALL PRIVILEGES ON user_db.* TO 'admin'@'%';
