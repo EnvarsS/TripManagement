@@ -1,5 +1,5 @@
+#version: '3.8'
 services:
-
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -38,5 +38,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  gateway-service:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVICES_USER_URL=http://user-service:8081
+      - SERVICES_TRIP_URL=http://trip-service:8082
+      - SERVICES_BOOKING_URL=http://booking-service:8083
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+
+  user-service:
+    image: my-user-service:latest
+  trip-service:
+    image: my-trip-service:latest
+  booking-service:
+    image: my-booking-service:latest
+
 volumes:
   mysql_data:

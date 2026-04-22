@@ -2,3 +2,4 @@ rootProject.name = 'trip-management'
 
 include 'common-module'
 //include 'services:service-b'
+include 'graphql-gateway'

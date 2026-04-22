@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  graphql:
+    graphiql:
+      enabled: true # Доступ до UI для тестування
+    endpoint: /graphql
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: full # Logging for Feign
+
+# URL з Docker Compose
+user.service.url: http://localhost:8081
+trip.service.url: http://localhost:8082
+booking.service.url: http://localhost:8083
+
+# Logging for Feign Clients
+logging:
+  level:
+    com.kafka.test.client: DEBUG
