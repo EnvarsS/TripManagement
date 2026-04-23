@@ -4,7 +4,7 @@ server:
 spring:
   graphql:
     graphiql:
-      enabled: true # Доступ до UI для тестування
+      enabled: true # Доступно за адресою /graphiql для тестування
     endpoint: /graphql
   cloud:
     openfeign:
@@ -14,9 +14,9 @@ spring:
             loggerLevel: full # Logging for Feign
 
 # URL з Docker Compose
-user.service.url: http://localhost:8081
-trip.service.url: http://localhost:8082
-booking.service.url: http://localhost:8083
+SERVICES_USER_URL: http://localhost:8081
+SERVICES_TRIP_URL: http://localhost:8082
+SERVICES_BOOKING_URL: http://localhost:8083
 
 # Logging for Feign Clients
 logging:
