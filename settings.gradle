@@ -1,4 +1,5 @@
 rootProject.name = 'trip-management'
 
 include 'common-module'
+include 'notification-service'
 //include 'services:service-b'
