@@ -9,9 +9,6 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.type.mapping: |
-          org.envycorp.commonmodule.events.booking.BookingCreatedEvent=org.envycorp.commonmodule.events.BookingCreatedEvent,
-          org.envycorp.commonmodule.events.booking.BookingConfirmedEvent=org.envycorp.commonmodule.events.BookingConfirmedEvent
         spring.json.trusted.packages: org.envycorp.commonmodule.events
     listener:
       ack-mode: MANUAL_IMMEDIATE

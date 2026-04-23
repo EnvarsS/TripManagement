@@ -3,13 +3,13 @@ package org.envycorp.notificationservice.listener;
 import lombok.extern.slf4j.Slf4j;
 import org.envycorp.commonmodule.events.BookingConfirmedEvent;
 import org.envycorp.commonmodule.events.BookingCreatedEvent;
-import org.springframework.kafka.annotation.BackOff;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -21,11 +21,7 @@ public class BookingEventListener {
 
     @RetryableTopic(
             attempts = "4",
-            backOff = @BackOff(
-                    delay = 2000,
-                    multiplier = 1.5,
-                    maxDelay = 10000
-            ),
+            backoff = @Backoff(delay = 2000, multiplier = 1.5, maxDelay = 10000),
             autoCreateTopics = "false",
             dltTopicSuffix = "-dlt"
     )
@@ -57,7 +53,7 @@ public class BookingEventListener {
 
     @RetryableTopic(
             attempts = "4",
-            backOff = @BackOff(delay = 2000, multiplier = 1.5, maxDelay = 10000),
+            backoff =  @Backoff(delay = 2000, multiplier = 1.5, maxDelay = 10000),
             autoCreateTopics = "false",
             dltTopicSuffix = "-dlt"
     )
