@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +26,10 @@ public class User {
 
     @Column(nullable = false)
     private String hashedPassword;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
