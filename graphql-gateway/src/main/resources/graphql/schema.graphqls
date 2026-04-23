@@ -20,3 +20,33 @@ type Booking {
     status: String
     notification: String
 }
+
+type Mutation {
+    createUser(input: UserInput!): User
+    updateUser(id: ID!, input: UserInput!): User
+
+    createTrip(input: TripInput!): Trip
+    updateTrip(id: ID!, input: TripInput!): Trip
+
+    createBooking(input: BookingInput!): Booking
+}
+
+input UserInput {
+    name: String!
+    email: String!
+}
+
+input TripInput {
+    destination: String!
+    startDate: String!
+    userId: ID!
+}
+
+input BookingInput {
+    tripId: ID!
+    userId: ID!
+}
+
+#type User { id: ID!, name: String, email: String }
+#type Trip { id: ID!, destination: String, startDate: String, user: User }
+#type Booking { id: ID!, trip: Trip, user: User }

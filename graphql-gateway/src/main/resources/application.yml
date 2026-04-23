@@ -21,4 +21,8 @@ SERVICES_BOOKING_URL: http://localhost:8083
 # Logging for Feign Clients
 logging:
   level:
-    com.kafka.test.client: DEBUG
+    com.kafka.gateway.client: DEBUG
+    org.springframework.graphql: DEBUG
+
+
+

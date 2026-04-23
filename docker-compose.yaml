@@ -39,7 +39,7 @@ services:
       timeout: 5s
       retries: 5
 
-  gateway-service:
+  graphql-gateway:
     build: .
     ports:
       - "8080:8080"
@@ -47,17 +47,42 @@ services:
       - SERVICES_USER_URL=http://user-service:8081
       - SERVICES_TRIP_URL=http://trip-service:8082
       - SERVICES_BOOKING_URL=http://booking-service:8083
+    depends_on:
+      - user-service
+      - trip-service
+      - booking-service
+
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
 
+  # Заглушка для User Service
   user-service:
-    image: my-user-service:latest
+    image: wiremock/wiremock:latest
+    ports:
+      - "8081:8080"
+    command: >
+      --global-response-templating
+    volumes:
+      - ./stubs/user:/home/wiremock
+
+  # Заглушка для Trip Service
   trip-service:
-    image: my-trip-service:latest
+    image: wiremock/wiremock:latest
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./stubs/trip:/home/wiremock
+
+  # Заглушка для Booking Service
   booking-service:
-    image: my-booking-service:latest
+    image: wiremock/wiremock:latest
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./stubs/booking:/home/wiremock
+
 
 volumes:
   mysql_data:
