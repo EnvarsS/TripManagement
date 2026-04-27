@@ -20,52 +20,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final ModelMapper modelMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtService jwtService;
+    private final ModelMapper modelMapper;
 
-    @Transactional
-    public String login(UserLoginRequestDto userLogin) {
-        User user = userRepository.findByEmail(userLogin.getEmail())
-                .orElseThrow(() -> new IncorrectEmailException("Invalid email or password"));
-
-        if (!bCryptPasswordEncoder.matches(userLogin.getPassword(), user.getHashedPassword())) {
-            throw new IncorrectPasswordException("Invalid password");
-        }
-
-        return jwtService.generateToken(user);
-    }
-
-    @Transactional
-    public ResponseEntity<String> createUser(UserCreateRequestDto userCreate) {
-        if(userRepository.existsByEmail(userCreate.getEmail())) {
-            throw new EmailIsAlreadyTakenException("Email Already Exists");
-        }
-
-        User user = modelMapper.map(userCreate, User.class);
-        user.setHashedPassword(bCryptPasswordEncoder.encode(userCreate.getPassword()));
-        Role role = roleRepository.findByName("USER");
-        user.setRole(role);
-        User savedUser = userRepository.save(user);
-
-        String jwt = jwtService.generateToken(savedUser);
-
-        return ResponseEntity.ok(jwt);
-
-    }
-
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    public UserResponseDto getCurrentUser() {
+    public UserResponseDto getUser() {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userRepository.findById(userId)
@@ -75,7 +37,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateCurrentUser(UserUpdateRequestDto dto) {
+    public UserResponseDto updateUser(UserUpdateRequestDto dto) {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userRepository.findById(userId)
@@ -98,7 +60,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteCurrentUser() {
+    public void deleteUser() {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userRepository.findById(userId)
