@@ -1,0 +1,20 @@
+type Query {
+    user(id: ID!): User
+}
+
+type User {
+    id: ID
+    name: String
+    trips: [Trip]
+}
+
+type Trip {
+    id: ID
+    destination: String
+    bookings: [Booking]
+}
+
+type Booking {
+    id: ID
+    status: String
+}

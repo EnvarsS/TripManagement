@@ -38,5 +38,24 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  graphql-gateway:
+    build:
+      context: ./graphql-gateway
+      dockerfile: Dockerfile
+    container_name: graphql-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      BACKEND_SERVICES_USER_SERVICE_URL: http://user-service:8081
+      BACKEND_SERVICES_TRIP_SERVICE_URL: http://trip-service:8082
+      BACKEND_SERVICES_BOOKING_SERVICE_URL: http://booking-service:8083
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   mysql_data:

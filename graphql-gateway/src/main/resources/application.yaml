@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: graphql-gateway
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    schema:
+      locations: classpath:graphql/
+      file-extensions: .graphqls
+    path: /graphql
+
+server:
+  port: 8080
+
+# Backend service URLs
+backend:
+  services:
+    user-service:
+      url: http://localhost:8081
+    trip-service:
+      url: http://localhost:8082
+    booking-service:
+      url: http://localhost:8083
+
+# Logging
+logging:
+  level:
+    org.envycorp.graphqlgateway: INFO
+    org.springframework.graphql: DEBUG
+
+# Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

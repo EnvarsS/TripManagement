@@ -1,0 +1,12 @@
+backend:
+  services:
+    user-service:
+      url: ${BACKEND_SERVICES_USER_SERVICE_URL:http://user-service:8081}
+    trip-service:
+      url: ${BACKEND_SERVICES_TRIP_SERVICE_URL:http://trip-service:8082}
+    booking-service:
+      url: ${BACKEND_SERVICES_BOOKING_SERVICE_URL:http://booking-service:8083}
+
+logging:
+  level:
+    org.envycorp.graphqlgateway: DEBUG

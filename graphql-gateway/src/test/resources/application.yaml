@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: graphql-gateway-test
+  graphql:
+    graphiql:
+      enabled: false
+    schema:
+      locations: classpath:graphql/
+      file-extensions: .graphqls
+    path: /graphql
+
+server:
+  port: 0
+
+# Backend service URLs (placeholder for tests)
+backend:
+  services:
+    user-service:
+      url: http://localhost:8081
+    trip-service:
+      url: http://localhost:8082
+    booking-service:
+      url: http://localhost:8083
+
+logging:
+  level:
+    org.envycorp.graphqlgateway: DEBUG
