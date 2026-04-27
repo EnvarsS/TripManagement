@@ -17,12 +17,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public UserResponseDto getCurrentUser() {
+    public ResponseEntity<UserResponseDto> getCurrentUser() {
         return userService.getUser();
     }
 
     @PutMapping("/me")
-    public UserResponseDto updateUser(@Valid @RequestBody UserUpdateRequestDto dto) {
+    public ResponseEntity<UserResponseDto> updateUser(@Valid @RequestBody UserUpdateRequestDto dto) {
         return userService.updateUser(dto);
     }
 

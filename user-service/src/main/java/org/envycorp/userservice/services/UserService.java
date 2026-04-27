@@ -2,16 +2,10 @@ package org.envycorp.userservice.services;
 
 import lombok.RequiredArgsConstructor;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
-import org.envycorp.userservice.exceptions.IncorrectEmailException;
-import org.envycorp.userservice.exceptions.IncorrectPasswordException;
 import org.envycorp.userservice.exceptions.UserNotFoundException;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
 import org.envycorp.userservice.models.dto.request.UserUpdateRequestDto;
 import org.envycorp.userservice.models.dto.response.UserResponseDto;
-import org.envycorp.userservice.models.entity.Role;
 import org.envycorp.userservice.models.entity.User;
-import org.envycorp.userservice.repositories.RoleRepository;
 import org.envycorp.userservice.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +21,17 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
 
-    public UserResponseDto getUser() {
+    public ResponseEntity<UserResponseDto> getUser() {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        return modelMapper.map(user, UserResponseDto.class);
+        return ResponseEntity.ok(modelMapper.map(user, UserResponseDto.class));
     }
 
     @Transactional
-    public UserResponseDto updateUser(UserUpdateRequestDto dto) {
+    public ResponseEntity<UserResponseDto> updateUser(UserUpdateRequestDto dto) {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         User user = userRepository.findById(userId)
@@ -56,7 +50,7 @@ public class UserService {
             user.setHashedPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         }
 
-        return modelMapper.map(userRepository.save(user), UserResponseDto.class);
+        return ResponseEntity.ok(modelMapper.map(userRepository.save(user), UserResponseDto.class));
     }
 
     @Transactional
