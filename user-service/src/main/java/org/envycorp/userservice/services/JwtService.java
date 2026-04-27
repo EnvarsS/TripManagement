@@ -24,7 +24,6 @@ public class JwtService {
 
         if (configured == null || configured.isBlank()) {
             this.secretKey = Jwts.SIG.HS256.key().build();
-            log.warn("No JWT secret configured — generated ephemeral key");
         } else {
             this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(configured));
         }
@@ -44,13 +43,11 @@ public class JwtService {
     }
 
     public Claims parseToken(String token) {
-        Claims claims = Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(token)
+                .parseSignedClaims(token)
                 .getPayload();
-
-        return claims;
     }
 
     public Long extractUserId(String token) {
@@ -59,9 +56,5 @@ public class JwtService {
 
     public String extractRole(String token) {
         return parseToken(token).get("role", String.class);
-    }
-
-    public boolean isTokenValid(String token) {
-        return parseToken(token).getExpiration().after(new Date());
     }
 }

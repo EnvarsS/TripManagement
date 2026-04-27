@@ -1,10 +1,13 @@
 package org.envycorp.userservice.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.envycorp.userservice.services.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,11 +21,12 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -32,13 +36,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwt = authorizationHeader.substring(7);
 
-        if (!jwtService.isTokenValid(jwt)) {
+        Long userId;
+        String role;
+
+        try {
+            userId = jwtService.extractUserId(jwt);
+            role = jwtService.extractRole(jwt);
+        } catch (ExpiredJwtException e) {
+            log.warn("JWT expired: {}", e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
+        } catch (JwtException e) {
+            log.warn("JWT invalid: {}", e.getMessage());
             filterChain.doFilter(request, response);
             return;
         }
-
-        Long userId = jwtService.extractUserId(jwt);
-        String role = jwtService.extractRole(jwt);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken auth =
