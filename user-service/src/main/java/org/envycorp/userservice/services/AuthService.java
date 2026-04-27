@@ -1,6 +1,7 @@
 package org.envycorp.userservice.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.IncorrectEmailException;
 import org.envycorp.userservice.exceptions.IncorrectPasswordException;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -28,18 +30,24 @@ public class AuthService {
     @Transactional
     public ResponseEntity<String> login(UserLoginRequestDto userLogin) {
         User user = userRepository.findByEmail(userLogin.getEmail())
-                .orElseThrow(() -> new IncorrectEmailException("Invalid email or password"));
+                .orElseThrow(() -> {
+                    log.warn("Login failed: account not found");
+                    return new IncorrectEmailException("Invalid email or password");
+                });
 
         if (!bCryptPasswordEncoder.matches(userLogin.getPassword(), user.getHashedPassword())) {
+            log.warn("Login failed: invalid credentials for userId={}", user.getId());
             throw new IncorrectPasswordException("Invalid password");
         }
 
+        log.info("User authenticated successfully: userId={}", user.getId());
         return ResponseEntity.ok(jwtService.generateToken(user));
     }
 
     @Transactional
     public ResponseEntity<String> createUser(UserCreateRequestDto userCreate) {
-        if(userRepository.existsByEmail(userCreate.getEmail())) {
+        if (userRepository.existsByEmail(userCreate.getEmail())) {
+            log.warn("Registration failed: email already taken");
             throw new EmailIsAlreadyTakenException("Email Already Exists");
         }
 
@@ -49,8 +57,7 @@ public class AuthService {
         user.setRole(role);
         User savedUser = userRepository.save(user);
 
-        String jwt = jwtService.generateToken(savedUser);
-
-        return ResponseEntity.ok(jwt);
+        log.info("User registered successfully: userId={}", savedUser.getId());
+        return ResponseEntity.ok(jwtService.generateToken(savedUser));
     }
 }
