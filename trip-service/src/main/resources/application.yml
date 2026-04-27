@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: trip-service
+
+  # 1. Налаштування підключення до бази даних MySQL
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/trip_db}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # 2. Налаштування JPA / Hibernate
+  jpa:
+    # database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update # Автоматично оновлює структуру таблиць при зміні коду
+    show-sql: true # Виводить SQL-запити в консоль для дебагу
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  # 3. Налаштування Apache Kafka
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: trip-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
+# 4. Кастомні налаштування для взаємодії мікросервісів
+app:
+  services:
+    user-url: ${APP_SERVICES_USER_URL:http://localhost:8081} # Використовується в OpenFeign
+
+# 5. Рівні логування
+logging:
+  level:
+    root: INFO
+    org.envycorp.tripservice: DEBUG # Детальні логи для нашої бізнес-логіки
