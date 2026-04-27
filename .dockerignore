@@ -1,0 +1,7 @@
+.gradle
+build
+!build/libs/*.jar
+target
+.github
+.idea
+Dockerfile

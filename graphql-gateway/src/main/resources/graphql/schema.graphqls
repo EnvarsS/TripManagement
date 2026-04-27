@@ -8,13 +8,39 @@ type User {
     trips: [Trip]
 }
 
-type Trip {
-    id: ID
-    destination: String
-    bookings: [Booking]
-}
+#type Trip {
+#    id: ID
+#    destination: String
+#    bookings: [Booking]
+#}
 
 type Booking {
     id: ID
     status: String
+}
+
+type Trip {
+    id: ID!
+    userId: ID!
+    origin: String!
+    destination: String!
+    departureTime: String!
+    status: String!
+    bookings: [Booking]
+}
+
+input TripInput {
+    userId: ID!
+    origin: String!
+    destination: String!
+    departureTime: String!
+}
+
+type Query {
+    getTrip(id: ID!): Trip
+    getAllTrips: [Trip!]!
+}
+
+type Mutation {
+    createTrip(input: TripInput!): Trip!
 }

@@ -1,0 +1,26 @@
+
+version: '3.8'
+services:
+  gateway:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - USER_SERVICE_URL=http://user-service:8081
+      - TRIP_SERVICE_URL=http://trip-service:8082
+      - BOOKING_SERVICE_URL=http://booking-service:8083
+    depends_on:
+      - user-service
+      - trip-service
+      - booking-service
+
+  # Заглушки для REST-сервісів (для тестування)
+  user-service:
+    image: alpine
+    command: ["/bin/sh", "-c", "while true; do echo -e 'HTTP/1.1 200 OK\n\n{\"id\":1, \"name\":\"Ivan\"}' | nc -l -p 8081; done"]
+  trip-service:
+    image: alpine
+    command: ["/bin/sh", "-c", "while true; do echo -e 'HTTP/1.1 200 OK\n\n[{\"id\":10, \"destination\":\"Kyiv\"}]' | nc -l -p 8082; done"]
+  booking-service:
+    image: alpine
+    command: ["/bin/sh", "-c", "while true; do echo -e 'HTTP/1.1 200 OK\n\n[{\"id\":100, \"status\":\"CONFIRMED\"}]' | nc -l -p 8083; done"]

@@ -36,4 +36,8 @@ subprojects {
 
         check.dependsOn jacocoTestCoverageVerification
     }
+
+    dependencies {
+        runtimeOnly 'com.mysql:mysql-connector-j'
+    }
 }
