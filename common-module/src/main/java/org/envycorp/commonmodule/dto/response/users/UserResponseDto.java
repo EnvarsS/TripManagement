@@ -1,9 +1,8 @@
-package org.envycorp.userservice.models.dto.response;
+package org.envycorp.commonmodule.dto.response.users;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.envycorp.userservice.models.entity.Role;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +12,6 @@ import java.time.LocalDateTime;
 public class UserResponseDto {
     private String name;
     private String email;
-    private Role role;
+    private RoleResponseDto role;
     private LocalDateTime createdAt;
 }
