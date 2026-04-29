@@ -25,6 +25,8 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
+    private static final int BEARER_PREFIX_LENGTH = "Bearer ".length();
+
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
@@ -34,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authorizationHeader.substring(7);
+        String jwt = authorizationHeader.substring(BEARER_PREFIX_LENGTH);
 
         Long userId;
         String role;
