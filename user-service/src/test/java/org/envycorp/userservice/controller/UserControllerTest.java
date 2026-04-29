@@ -1,11 +1,12 @@
 package org.envycorp.userservice.controller;
 
+import org.envycorp.commonmodule.dto.request.users.UserUpdateRequestDto;
+import org.envycorp.commonmodule.dto.response.users.RoleResponseDto;
+import org.envycorp.commonmodule.dto.response.users.UserResponseDto;
 import org.envycorp.userservice.controllers.UserController;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.UserNotFoundException;
 import org.envycorp.userservice.filter.JwtFilter;
-import org.envycorp.userservice.models.dto.request.UserUpdateRequestDto;
-import org.envycorp.userservice.models.dto.response.UserResponseDto;
 import org.envycorp.userservice.models.entity.Role;
 import org.envycorp.userservice.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ public class UserControllerTest {
     void setUp() {
         userResponseDto = new UserResponseDto(
                 "Test User", "test@example.com",
-                new Role(1L, "USER"), LocalDateTime.now());
+                new RoleResponseDto(1L, "USER"), LocalDateTime.now());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class UserControllerTest {
     void updateMe_ValidRequest_Returns200WithUpdatedBody() throws Exception {
         UserUpdateRequestDto dto = new UserUpdateRequestDto("New Name", "new@example.com", "password123");
         UserResponseDto updated = new UserResponseDto("New Name", "new@example.com",
-                new Role(1L, "USER"), LocalDateTime.now());
+                new RoleResponseDto(1L, "USER"), LocalDateTime.now());
 
         when(userService.updateUser(any())).thenReturn(ResponseEntity.ok(updated));
 

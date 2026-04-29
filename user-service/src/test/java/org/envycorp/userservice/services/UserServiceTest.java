@@ -1,9 +1,10 @@
 package org.envycorp.userservice.services;
 
+import org.envycorp.commonmodule.dto.request.users.UserUpdateRequestDto;
+import org.envycorp.commonmodule.dto.response.users.RoleResponseDto;
+import org.envycorp.commonmodule.dto.response.users.UserResponseDto;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.UserNotFoundException;
-import org.envycorp.userservice.models.dto.request.UserUpdateRequestDto;
-import org.envycorp.userservice.models.dto.response.UserResponseDto;
 import org.envycorp.userservice.models.entity.Role;
 import org.envycorp.userservice.models.entity.User;
 import org.envycorp.userservice.repositories.UserRepository;
@@ -67,7 +68,7 @@ public class UserServiceTest {
      @Test
     void getUser_ExistingUser_Returns200WithBody() {
         UserResponseDto dto = new UserResponseDto("Test User", "test@example.com",
-                user.getRole(), user.getCreatedAt());
+                modelMapper.map(user.getRole(), RoleResponseDto.class), user.getCreatedAt());
 
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
         when(modelMapper.map(user, UserResponseDto.class)).thenReturn(dto);
@@ -113,7 +114,7 @@ public class UserServiceTest {
     void updateUser_SameEmail_NewPassword_UpdatesPasswordAndReturns200() {
         UserUpdateRequestDto dto = new UserUpdateRequestDto("New Name", "test@example.com", "newPass");
         UserResponseDto responseDto = new UserResponseDto("New Name", "test@example.com",
-                user.getRole(), user.getCreatedAt());
+                modelMapper.map(user.getRole(), RoleResponseDto.class), user.getCreatedAt());
 
         when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
         when(bCryptPasswordEncoder.matches("newPass", user.getHashedPassword())).thenReturn(false);

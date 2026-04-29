@@ -1,15 +1,14 @@
 package org.envycorp.userservice.controller;
 
+import org.envycorp.commonmodule.dto.request.users.UserCreateRequestDto;
+import org.envycorp.commonmodule.dto.request.users.UserLoginRequestDto;
 import org.envycorp.userservice.controllers.AuthController;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.IncorrectEmailException;
 import org.envycorp.userservice.exceptions.IncorrectPasswordException;
 import org.envycorp.userservice.filter.JwtFilter;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
 import org.envycorp.userservice.services.AuthService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -85,7 +84,7 @@ public class AuthControllerTest {
     @Test
     @WithMockUser
     void register_ValidRequest_Returns200WithToken() throws Exception {
-        when(authService.createUser(any())).thenReturn(ResponseEntity.ok("new-token"));
+        when(authService.signInAndCreateUser(any())).thenReturn(ResponseEntity.ok("new-token"));
 
         mockMvc.perform(post("/auth/register").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +97,7 @@ public class AuthControllerTest {
     @Test
     @WithMockUser
     void register_DuplicateEmail_Returns400() throws Exception {
-        when(authService.createUser(any()))
+        when(authService.signInAndCreateUser(any()))
                 .thenThrow(new EmailIsAlreadyTakenException("Email Already Exists"));
 
         mockMvc.perform(post("/auth/register").with(csrf())

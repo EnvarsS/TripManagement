@@ -1,10 +1,10 @@
 package org.envycorp.userservice.services;
 
+import org.envycorp.commonmodule.dto.request.users.UserCreateRequestDto;
+import org.envycorp.commonmodule.dto.request.users.UserLoginRequestDto;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.IncorrectEmailException;
 import org.envycorp.userservice.exceptions.IncorrectPasswordException;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
 import org.envycorp.userservice.models.entity.Role;
 import org.envycorp.userservice.models.entity.User;
 import org.envycorp.userservice.repositories.RoleRepository;
@@ -103,7 +103,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void createUser_NewEmail_SavesAndReturnsToken() {
+    void signInAndCreateUser_NewEmail_SavesAndReturnsToken() {
         UserCreateRequestDto dto = new UserCreateRequestDto("new@example.com", "password123", "New User");
         User mappedUser = new User();
 
@@ -114,7 +114,7 @@ public class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(jwtService.generateToken(user)).thenReturn("new-token");
 
-        ResponseEntity<String> response = authService.createUser(dto);
+        ResponseEntity<String> response = authService.signInAndCreateUser(dto);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("new-token");
@@ -123,10 +123,10 @@ public class AuthServiceTest {
     }
 
     @Test
-    void createUser_DuplicateEmail_ThrowsEmailIsAlreadyTakenException() {
+    void signInAndCreateUser_DuplicateEmail_ThrowsEmailIsAlreadyTakenException() {
         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
 
-        assertThatThrownBy(() -> authService.createUser(
+        assertThatThrownBy(() -> authService.signInAndCreateUser(
                 new UserCreateRequestDto("test@example.com", "password123", "Test")))
                 .isInstanceOf(EmailIsAlreadyTakenException.class)
                 .hasMessage("Email Already Exists");
@@ -135,7 +135,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    void createUser_AlwaysAssignsDefaultUserRole() {
+    void signInAndCreateUser_AlwaysAssignsDefaultUserRole() {
         UserCreateRequestDto dto = new UserCreateRequestDto("new@example.com", "password123", "User");
         User mappedUser = new User();
 
@@ -146,14 +146,14 @@ public class AuthServiceTest {
         when(userRepository.save(any())).thenReturn(user);
         when(jwtService.generateToken(any())).thenReturn("token");
 
-        authService.createUser(dto);
+        authService.signInAndCreateUser(dto);
 
         verify(roleRepository).findByName("USER");
         assertThat(mappedUser.getRole()).isEqualTo(userRole);
     }
 
     @Test
-    void createUser_PasswordIsEncoded_BeforeSaving() {
+    void signInAndCreateUser_PasswordIsEncoded_BeforeSaving() {
         UserCreateRequestDto dto = new UserCreateRequestDto("new@example.com", "plaintext", "User");
         User mappedUser = new User();
 
@@ -164,7 +164,7 @@ public class AuthServiceTest {
         when(userRepository.save(any())).thenReturn(user);
         when(jwtService.generateToken(any())).thenReturn("token");
 
-        authService.createUser(dto);
+        authService.signInAndCreateUser(dto);
 
         assertThat(mappedUser.getHashedPassword()).isEqualTo("$2a$hashed");
         verify(bCryptPasswordEncoder).encode("plaintext");
