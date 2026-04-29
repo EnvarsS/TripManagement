@@ -2,11 +2,11 @@ package org.envycorp.userservice.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.envycorp.commonmodule.dto.request.users.UserCreateRequestDto;
+import org.envycorp.commonmodule.dto.request.users.UserLoginRequestDto;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.IncorrectEmailException;
 import org.envycorp.userservice.exceptions.IncorrectPasswordException;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
 import org.envycorp.userservice.models.entity.Role;
 import org.envycorp.userservice.models.entity.User;
 import org.envycorp.userservice.repositories.RoleRepository;
@@ -45,7 +45,7 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<String> createUser(UserCreateRequestDto userCreate) {
+    public ResponseEntity<String> signInAndCreateUser(UserCreateRequestDto userCreate) {
         if (userRepository.existsByEmail(userCreate.getEmail())) {
             log.warn("Registration failed: email already taken");
             throw new EmailIsAlreadyTakenException("Email Already Exists");

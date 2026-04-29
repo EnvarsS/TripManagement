@@ -2,10 +2,8 @@ package org.envycorp.userservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
-import org.envycorp.userservice.models.dto.request.UserUpdateRequestDto;
-import org.envycorp.userservice.models.dto.response.UserResponseDto;
+import org.envycorp.commonmodule.dto.request.users.UserUpdateRequestDto;
+import org.envycorp.commonmodule.dto.response.users.UserResponseDto;
 import org.envycorp.userservice.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

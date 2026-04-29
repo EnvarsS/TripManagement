@@ -2,8 +2,8 @@ package org.envycorp.userservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.envycorp.userservice.models.dto.request.UserCreateRequestDto;
-import org.envycorp.userservice.models.dto.request.UserLoginRequestDto;
+import org.envycorp.commonmodule.dto.request.users.UserCreateRequestDto;
+import org.envycorp.commonmodule.dto.request.users.UserLoginRequestDto;
 import org.envycorp.userservice.services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +24,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserCreateRequestDto userCreate) {
-        return authService.createUser(userCreate);
+        return authService.signInAndCreateUser(userCreate);
     }
 }

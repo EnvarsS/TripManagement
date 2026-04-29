@@ -2,10 +2,10 @@ package org.envycorp.userservice.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.envycorp.commonmodule.dto.request.users.UserUpdateRequestDto;
+import org.envycorp.commonmodule.dto.response.users.UserResponseDto;
 import org.envycorp.userservice.exceptions.EmailIsAlreadyTakenException;
 import org.envycorp.userservice.exceptions.UserNotFoundException;
-import org.envycorp.userservice.models.dto.request.UserUpdateRequestDto;
-import org.envycorp.userservice.models.dto.response.UserResponseDto;
 import org.envycorp.userservice.models.entity.User;
 import org.envycorp.userservice.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
