@@ -1,11 +1,27 @@
 type Query {
-    user(id: ID!): User
+    user(id: ID!): UserProfile
+    me: UserProfile
 }
 
-type User {
+type Mutation {
+    login(email: String!, password: String!): String
+    register(email: String!, password: String!, name: String!): String
+    createUser(email: String!, password: String!, name: String!): UserProfile
+    updateUser(id: ID!, name: String!, email: String!, password: String!): UserProfile
+    deleteUser(id: ID!): Boolean
+}
+
+type UserProfile {
     id: ID
     name: String
-    trips: [Trip]
+    email: String
+    role: RoleInfo
+    createdAt: String
+}
+
+type RoleInfo {
+    id: ID
+    name: String
 }
 
 type Trip {
