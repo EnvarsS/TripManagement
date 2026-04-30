@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  graphql:
+    graphiql:
+      enabled: true # Доступно за адресою /graphiql для тестування
+    endpoint: /graphql
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: full # Logging for Feign
+
+# URL з Docker Compose
+SERVICES_USER_URL: http://localhost:8081
+SERVICES_TRIP_URL: http://localhost:8082
+SERVICES_BOOKING_URL: http://localhost:8083
+
+# Logging for Feign Clients
+logging:
+  level:
+    com.kafka.gateway.client: DEBUG
+    org.springframework.graphql: DEBUG
+
+
+

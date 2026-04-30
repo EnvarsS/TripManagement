@@ -18,3 +18,19 @@ type Booking {
     id: ID
     status: String
 }
+
+input TripInput {
+    destination: String!
+}
+
+type Query {
+    getTrip(id: ID!): Trip
+    getAllTrips: [Trip!]!
+}
+
+type Mutation {
+    createTrip(input: TripInput!): Trip
+    updateTrip(id: ID!, input: TripInput!): Trip
+    deleteTrip(id: ID!): Boolean!
+}
+

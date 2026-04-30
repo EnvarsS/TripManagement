@@ -1,0 +1,11 @@
+{
+  "request": { "method": "GET", "url": "/trips/user/1" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": [
+      { "id": "t1", "destination": "Київ" },
+      { "id": "t2", "destination": "Львів" }
+    ]
+  }
+}

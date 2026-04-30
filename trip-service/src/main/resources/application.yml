@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: trip-service
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/trip_db?createDatabaseIfNotExist=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  # 2. Налаштування JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update # Автоматично оновлює структуру таблиць при зміні коду
+    show-sql: true # Виводить SQL-запити в консоль для дебагу
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  # 3. Налаштування Apache Kafka
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

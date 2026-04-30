@@ -57,5 +57,24 @@ services:
       timeout: 10s
       retries: 3
 
+  trip-service:
+    build: ./trip-service
+    container_name: trip-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://trip-db:3306/trip_db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - APP_SERVICES_USER_URL=http://user-service:8081 # URL для OpenFeign
+    depends_on:
+      - trip-db
+      - kafka
+    networks:
+      - microservice-network
+
 volumes:
   mysql_data:
+  trip_db_data:
+
