@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/bookings/batch"
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": {
+      "t1": [{ "id": "b1", "status": "CONFIRMED" }],
+      "t2": [{ "id": "b2", "status": "PENDING" }]
+    }
+  }
+}
